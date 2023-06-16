@@ -1,6 +1,6 @@
 import { groq } from "next-sanity";
 import { sanityClient } from "./client";
-import { CommentType, Post } from "@/types/sanityTypes";
+import { CommentType, Post, UserType } from "@/types/sanityTypes";
 
 export const getPosts = async (): Promise<Post[]> => {
   return sanityClient.fetch(
@@ -43,6 +43,18 @@ export const getComment = async (id: string): Promise<CommentType[]> => {
       email,
       comment,
       post -> {title, description, _id, "slug": slug.current}
+      }`,
+    { id }
+  );
+};
+
+export const getUser = async (id: string): Promise<UserType> => {
+  return sanityClient.fetch(
+    groq`*[_type == "user" && _id == $id][0] {
+      _id,
+      name, 
+      email,
+      hashedPassword,
       }`,
     { id }
   );

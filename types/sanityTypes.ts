@@ -32,3 +32,10 @@ export type SmallPost = {
   slug: string;
   description: string;
 };
+
+export type UserType = {
+  _id: string;
+  name: string;
+  email: string;
+  hashedPassword: string;
+};

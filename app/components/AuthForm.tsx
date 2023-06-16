@@ -3,7 +3,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { SubmitHandler, FieldValues, useForm } from "react-hook-form";
 // import axios from "axios";
-// import bcrypt from "bcrypt";
 import { signUp } from "next-auth-sanity/client";
 import { signIn } from "next-auth/react";
 import { toast } from "react-hot-toast";
@@ -43,7 +42,6 @@ const AuthForm = () => {
     password: string,
     name: string
   ) => {
-    //  const password = await bcrypt.hash(clientPassword, 12);
     const user = await signUp({
       email,
       password,
