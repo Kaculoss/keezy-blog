@@ -1,5 +1,4 @@
 import NextAuth, { AuthOptions } from "next-auth";
-import bcrypt from "bcrypt";
 import { SanityAdapter, SanityCredentials } from "next-auth-sanity";
 import { apiVersion, dataset, projectId, useCdn } from "../../../../sanity/env";
 import { createClient } from "next-sanity";
