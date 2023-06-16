@@ -16,9 +16,7 @@ export const authOptions: AuthOptions = {
   providers: [
     SanityCredentials(client), // only if you use sign in with credentials
   ],
-  debug: process.env.NODE_ENV === "development",
   session: { strategy: "jwt" },
-  secret: process.env.NEXTAUTH_SECRET,
 };
 
 const handler = NextAuth(authOptions);
