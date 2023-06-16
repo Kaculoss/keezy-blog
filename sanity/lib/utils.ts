@@ -48,14 +48,14 @@ export const getComment = async (id: string): Promise<CommentType[]> => {
   );
 };
 
-export const getUser = async (id: string): Promise<UserType> => {
+export const getUser = async (email: string): Promise<UserType> => {
   return sanityClient.fetch(
-    groq`*[_type == "user" && _id == $id][0] {
+    groq`*[_type == "user" && email == $email][0] {
       _id,
       name, 
       email,
       hashedPassword,
       }`,
-    { id }
+    { email }
   );
 };

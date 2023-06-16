@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { SubmitHandler, FieldValues, useForm } from "react-hook-form";
-// import axios from "axios";
-import { signUp } from "next-auth-sanity/client";
 import { signIn } from "next-auth/react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import Input from "./Input";
 import Button from "./Button";
+import axios from "axios";
+import { getUser } from "@/sanity/lib/utils";
 
 type Variant = "LOGIN" | "REGISTER";
 
@@ -37,58 +37,49 @@ const AuthForm = () => {
     },
   });
 
-  const handleRegister = async (
-    email: string,
-    password: string,
-    name: string
-  ) => {
-    const user = await signUp({
-      email,
-      password,
-      name,
-    });
+  const IsExistingUser = async (email: string) => {
+    const user = await getUser(email);
     return user;
   };
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
     if (variant === "REGISTER") {
-      toast
-        .promise(
-          handleRegister(data.email, data.password, data.name).catch((err) =>
-            console.log(err)
-          ),
-          {
-            error: "Registration Went Wrong!",
-            loading: "Registering...",
-            success: "Registered Successfully!",
-          }
-        )
-        .then(() =>
-          toast.promise(
-            signIn("sanity-login", {
-              redirect: false,
-              email: data.email,
-              password: data.password,
-            }).then((callback) => {
-              if (callback?.ok && !callback?.error) {
-                router.back();
-              }
-            }),
-            {
-              error: "Sign In Error!",
-              loading: "Logging In...",
-              success: "Logged In!",
-            }
-          )
-        )
-        .catch((err) => console.log("Toast Promise Err =>", err))
-        .finally(() => setIsLoading(false));
+      IsExistingUser(data.email).then((user) => {
+        console.log("User =>", user);
+        if (user) {
+          toast.error("Email Already Exists");
+          setIsLoading(false);
+        } else {
+          toast
+            .promise(axios.post("/api/register", data), {
+              error: "Registration Went Wrong!",
+              loading: "Registering...",
+              success: "Registered Successfully!",
+            })
+            .then(() =>
+              toast.promise(
+                signIn("credentials", data).then((callback) => {
+                  if (callback?.ok && !callback?.error) {
+                    router.back();
+                  }
+                }),
+                {
+                  error: "Sign In Error!",
+                  loading: "Logging In...",
+                  success: "Logged In!",
+                }
+              )
+            )
+            .catch((err) => console.log("Toast Promise Err =>", err))
+            .finally(() => setIsLoading(false));
+        }
+      });
     }
 
     if (variant === "LOGIN") {
       toast.promise(
-        signIn("sanity-login", { ...data, redirect: false })
+        signIn("credentials", { ...data, redirect: false })
           .then((callback) => {
             if (callback?.ok && !callback?.error) {
               router.back();

@@ -23,7 +23,7 @@ export default defineType({
       type: "url",
     }),
     defineField({
-      name: "password",
+      name: "hashedPassword",
       type: "string",
       hidden: true,
     }),

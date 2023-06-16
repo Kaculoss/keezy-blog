@@ -25,7 +25,6 @@ export async function POST(request: Request) {
 
     const user = await client.create({
       _type: "user",
-      _id: email,
       name,
       email,
       hashedPassword,
