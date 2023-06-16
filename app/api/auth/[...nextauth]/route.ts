@@ -14,7 +14,7 @@ const client = createClient({
   token: process.env.SANITY_API_TOKEN,
 });
 
-export const authOptions: AuthOptions = {
+const authOptions: AuthOptions = {
   adapter: SanityAdapter(client),
   providers: [
     CredentialsProvider({
